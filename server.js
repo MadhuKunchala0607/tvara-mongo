@@ -78,16 +78,17 @@ app.post('/products', upload.single('image'), async (req, res) => {
 });
 
 // GET Endpoint to Fetch Products
-app.get('/items', (req, res) => {
-    Product.find((err, products) => {
-        if (err) {
-            console.error('Error fetching products:', err);
-            return res.status(500).send('Database error');
-        }
-
+app.get('/items', async (req, res) => {
+    try {
+        // Use async/await for fetching products
+        const products = await Product.find();
         res.json(products);
-    });
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        res.status(500).send('Error fetching products from the database');
+    }
 });
+
 
 // Start Server
 app.listen(PORT, () => {
