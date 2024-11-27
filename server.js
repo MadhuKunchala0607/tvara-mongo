@@ -78,16 +78,21 @@ app.post('/products', upload.single('image'), async (req, res) => {
 });
 
 // GET Endpoint to Fetch Products
-app.get('/items', async (req, res) => {
+app.get('/products/items', async (req, res) => {
     try {
-        // Use async/await for fetching products
         const products = await Product.find();
-        res.json(products);
+        // Add server URL to the image path
+        const updatedProducts = products.map((product) => ({
+            ...product.toObject(),
+            image: product.image ? `https://tvara-mongo.onrender.com${product.image}` : null,
+        }));
+        res.json(updatedProducts);
     } catch (err) {
         console.error('Error fetching products:', err);
         res.status(500).send('Error fetching products from the database');
     }
 });
+
 
 
 // Start Server
